@@ -47,7 +47,7 @@ defmodule Styler.Examples.MixProject do
   defp package() do
     [
       # This option is only needed when you don't want to use the OTP application name
-      name: "examples-styler-ex",
+      name: "examples_styler",
       # These are the default files included in the package
       files: ~w(lib mix.exs README.md* LICENSE*),
       licenses: ["MIT"],
