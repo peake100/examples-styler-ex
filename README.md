@@ -11,12 +11,11 @@
     <a href="https://hexdocs.pm/examples_styler/readme.html"><img src="https://img.shields.io/badge/docs-hexdocs.pm-blue" alt="Documentation"></a>
 </p>
 
+`Styler.Examples` is an extension for [adobe/elixir-styler](https://github.com/adobe/elixir-styler) that styles code examples in your docstrings and markdown files!
+
 ## Usage
 
-`Examples Styler` relies on [adobe/elixir-styler](https://github.com/adobe/elixir-styler),
-and acts as an extension to bring the same styling rules to your docs!
-
-Add the following `plugins` value to your `.formatter.exs` file:
+This package implements a `mix format` plugin. Add the following `plugins` value to your `.formatter.exs` file:
 
 ```elixir
 [
@@ -25,26 +24,46 @@ Add the following `plugins` value to your `.formatter.exs` file:
 ]
 ```
 
-There is no need to add `Styler` itself. By default, `mix format` will only run one 
-plugin per file; `Styler.MultiPlugin` handles running both `Styler` and 
-`Styler.Examples` on `.exs` and `.ex` files.
+Although it is also a plugin, `Styler` itself should not be added. By default, `mix format` will only run one plugin per file, so if both `Styler` and `Styler.Examples` are present, only the one listed first will be run for `.ex` and `.exs` files. `Styler.MultiPlugin` handles running both `Styler` and `Styler.Examples` on those files in sequence.
 
-It will also run `Styler.Examples` `.md` and `.cheatmd` files.
+`Styler.Examples` will also be run on any `.md` and `.cheatmd` files returned by your `:input` filters. Be sure to add your README of you want your examples styled!
+
+## What gets styled
+
+We follow the same approach as ExUnit doc tests: example code must be prefaced by `iex> `.
+
+```elixir
+iex> # Input
+iex> 1 +     1
+```
+
+```elixir
+iex> # Output
+iex> 1 + 1
+```
+
+Code found on contiguous lines is styled together:
+
+```elixir
+iex> # Input
+iex> def add(a, b),
+iex>   do: a + b
+```
+
+```elixir
+iex> # Output
+iex> def add(a, b), do: a + b
+```
+
+Any lines prefaced with `iex> ` that are separated in any way will be styled separately.
 
 ## Approach and Limitations
 
-This package is still in very early development, and as such, make sure that you do not
-run it on any code that is not backed up.
+This package is still in very early development; be sure to back up your code before running the formatter.
 
-THe current approach is to simply find any contiguous lines that start with `iex> ` via
-regex and styling those, ignoring considerations of context, such as code blocks or 
-`@doc` attributes.
+Our current approach simply finds any lines starting with `iex> ` via regex and styles those. It ignores considerations of context, such code blocks or `@doc` attributes. Be warned that the formatter will execute on ANY lines that fit this criteria, like multi-line strings which start with `iex>`, for instance the inputs for our own test suite!
 
-This approach may catch things like multi-line strings that start with `iex>`, such as
-appear in the tests for this module! As a starting approach, we feel that this should be
-fine for the vast majority of projects, however, if it does happen to cause issues for 
-your particular code, please open a ticket with steps to re-create the issue and we'll
-take a look!
+As a starting approach, we suspect this will be fine for the vast majority of projects. However, if it does cause issues for your particular code, please open a ticket with steps to re-create the issue and we'll take a look!
 
 ## Installation
 
