@@ -4,7 +4,7 @@ defmodule Styler.Examples.MixProject do
   def project do
     [
       app: :examples_styler,
-      version: "0.2.0",
+      version: "0.1.1",
       description: "Style code examples with mix format",
       source_url: "https://github.com/peake100/examples-styler-ex",
       elixir: "~> 1.14",
