@@ -2,13 +2,13 @@
 </p>
 <p align="center">Use Styler on elixir code examples in your docs!</p>
 <p align="center">
-    <a href="https://dev.azure.com/peake100/Peake100/_build?definitionId=20"><img src="https://dev.azure.com/peake100/Peake100/_apis/build/status/examples-styler-ex?repoName=peake100%2examples-styler-ex&branchName=dev" alt="click to see build pipeline"></a>
-    <a href="https://dev.azure.com/peake100/Peake100/_build?definitionId=20"><img src="https://img.shields.io/azure-devops/tests/peake100/Peake100/20/dev?compact_message" alt="click to see build pipeline"></a>
-    <a href="https://dev.azure.com/peake100/Peake100/_build?definitionId=20"><img src="https://img.shields.io/azure-devops/coverage/peake100/Peake100/20/dev?compact_message" alt="click to see build pipeline"></a>
+    <a href="https://dev.azure.com/peake100/Peake100/_build?definitionId=21"><img src="https://dev.azure.com/peake100/Peake100/_apis/build/status/examples-styler-ex?repoName=peake100%2examples-styler-ex&branchName=dev" alt="click to see build pipeline"></a>
+    <a href="https://dev.azure.com/peake100/Peake100/_build?definitionId=21"><img src="https://img.shields.io/azure-devops/tests/peake100/Peake100/20/dev?compact_message" alt="click to see build pipeline"></a>
+    <a href="https://dev.azure.com/peake100/Peake100/_build?definitionId=21"><img src="https://img.shields.io/azure-devops/coverage/peake100/Peake100/20/dev?compact_message" alt="click to see build pipeline"></a>
 </p>
 <p align="center">
-    <a href="https://hex.pm/packages/example"><img src="https://img.shields.io/hexpm/v/vtc.svg" alt="PyPI version" height="18"></a>
-    <a href="https://hexdocs.pm/vtc/readme.html"><img src="https://img.shields.io/badge/docs-hexdocs.pm-blue" alt="Documentation"></a>
+    <a href="https://hex.pm/packages/examples_styler"><img src="https://img.shields.io/hexpm/v/vtc.svg" alt="Hex version" height="18"></a>
+    <a href="https://hexdocs.pm/examples_styler/readme.html"><img src="https://img.shields.io/badge/docs-hexdocs.pm-blue" alt="Documentation"></a>
 </p>
 
 ## Usage
