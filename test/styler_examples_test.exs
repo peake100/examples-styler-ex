@@ -109,7 +109,7 @@ defmodule Styler.ExmaplesTest do
         """
       },
       %{
-        name: "with preceeding non-example text",
+        name: "with preceding non-example text",
         input: """
         Some example text here.
 

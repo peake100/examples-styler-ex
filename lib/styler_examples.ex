@@ -92,7 +92,7 @@ defmodule Styler.Examples do
     [indent] = Regex.run(~r/^[\t ]*/, example)
 
     # We need to remove the current formatter from the list to avoid recursively calling
-    # this funciton, and update the extension to ".exs" so that we trigger the correct
+    # this function, and update the extension to ".exs" so that we trigger the correct
     # formatters, even if we are in a markdown file.
     opts =
       opts
