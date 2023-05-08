@@ -13,7 +13,7 @@
 
 ## Usage
 
-Example Styler relies on [adobe/elixir-styler](https://github.com/adobe/elixir-styler),
+`Examples Styler` relies on [adobe/elixir-styler](https://github.com/adobe/elixir-styler),
 and acts as an extension to bring the same styling rules to your docs!
 
 Add the following `plugins` value to your `.formatter.exs` file:
@@ -29,7 +29,7 @@ There is no need to add `Styler` itself. By default, `mix format` will only run 
 plugin per file; `Styler.MultiPlugin` handles running both `Styler` and 
 `Styler.Examples` on `.exs` and `.ex` files.
 
-It will also run `Styler.Examples` `.mo` and `.cheatmd files`.
+It will also run `Styler.Examples` `.md` and `.cheatmd` files.
 
 ## Installation
 

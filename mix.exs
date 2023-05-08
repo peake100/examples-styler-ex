@@ -5,7 +5,7 @@ defmodule Styler.Examples.MixProject do
     [
       app: :examples_styler,
       version: "0.2.0",
-      description: "Style ExDoc code examples",
+      description: "Style code examples with mix format",
       source_url: "https://github.com/peake100/examples-styler-ex",
       elixir: "~> 1.14",
       test_coverage: [tool: :covertool],
