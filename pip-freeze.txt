@@ -1,0 +1,3 @@
+packaging==23.1
+toml==0.10.2
+-e git+https://github.com/peake100/examples-styler-ex@d99cd01b0e56ccfbcb857b7138065bee91e1d608#egg=UNKNOWN
