@@ -54,7 +54,7 @@ by adding `examples_styler` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:examples_styler, "~> 0.1"}
+    {:examples_styler, "~> 0.1", only: [:dev, :test], runtime: false}
   ]
 end
 ```
