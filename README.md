@@ -49,7 +49,7 @@ take a look!
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `vtc` to your list of dependencies in `mix.exs`:
+by adding `examples_styler` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
