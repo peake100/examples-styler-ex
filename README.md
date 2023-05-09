@@ -24,7 +24,7 @@ This package implements a `mix format` plugin. Add the following `plugins` value
 ]
 ```
 
-Although it is also a plugin, `Styler` itself should not be added. By default, `mix format` will only run one plugin per file, so if both `Styler` and `Styler.Examples` are present, only the one listed first will be run for `.ex` and `.exs` files. `Styler.MultiPlugin` handles running both `Styler` and `Styler.Examples` on those files in sequence.
+Although it is also a plugin, `Styler` itself should not be added. `mix format` will only run one plugin per file, so if both `Styler` and `Styler.Examples` are present, only the one listed first will be run for `.ex` and `.exs` files. `Styler.MultiPlugin` handles running both `Styler` and `Styler.Examples` on those files in sequence.
 
 `Styler.Examples` will also be run on any `.md` and `.cheatmd` files returned by your `:input` filters. Be sure to add your README of you want your examples styled!
 
