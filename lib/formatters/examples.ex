@@ -1,12 +1,10 @@
-defmodule Mix.Tasks.Format.Examples.Formatter do
-  @moduledoc """
-  Styles Code examples in ".ex", ".exs", ".md", and ".cheatmd" files
-  """
+defmodule ExamplesStyler.Examples do
+  @moduledoc false
+
   @behaviour Mix.Tasks.Format
 
+  alias ExamplesStyler.Utils
   alias Mix.Tasks.Format
-
-  @typep format_opts() :: Format.Default.format_opts()
 
   # Regex index match on a code example.
   @typep regex_index() :: [{non_neg_integer(), non_neg_integer()}]
@@ -22,7 +20,7 @@ defmodule Mix.Tasks.Format.Examples.Formatter do
 
   @doc false
   @impl Format
-  @spec features(format_opts()) :: [sigils: [atom()], extensions: [String.t()]]
+  @spec features(Utils.format_opts()) :: [sigils: [atom()], extensions: [String.t()]]
   def features(_opts), do: [sigils: [], extensions: [".ex", ".exs", ".md", ".cheatmd"]]
 
   @docs_regex ~r/(?>@doc|@moduledoc|@typedoc)\s*""".*"""/msU
@@ -30,9 +28,9 @@ defmodule Mix.Tasks.Format.Examples.Formatter do
 
   @doc false
   @impl Format
-  @spec format(String.t(), format_opts()) :: String.t()
+  @spec format(String.t(), Utils.format_opts()) :: String.t()
   def format(input, opts) do
-    elixir_plugin = find_elixir_formatter(opts)
+    elixir_plugin = Utils.find_elixir_formatter(opts)
     extension = Keyword.fetch!(opts, :extension)
 
     docs_indexes =
@@ -98,7 +96,7 @@ defmodule Mix.Tasks.Format.Examples.Formatter do
   end
 
   # Reformats a single example.
-  @spec reformat_example(String.t(), module(), format_opts()) :: String.t()
+  @spec reformat_example(String.t(), module(), Utils.format_opts()) :: String.t()
   defp reformat_example(example, elixir_plugin, opts) do
     [indent] = Regex.run(~r/^[\t ]*/, example)
 
@@ -109,21 +107,5 @@ defmodule Mix.Tasks.Format.Examples.Formatter do
     |> elixir_plugin.format(opts)
     |> String.replace(~r/^/m, prompt)
     |> String.trim_trailing(prompt)
-  end
-
-  @spec find_elixir_formatter(format_opts()) :: module()
-  def find_elixir_formatter(opts) do
-    opts
-    |> Keyword.fetch!(:plugins)
-    |> Enum.reject(&(&1 in [__MODULE__, Format.Examples]))
-    |> Enum.find(Format.Default, &is_elixir_plugin?(&1, opts))
-  end
-
-  @spec is_elixir_plugin?(module(), format_opts()) :: boolean()
-  def is_elixir_plugin?(plugin, opts) do
-    elixir_extensions = MapSet.new([".ex", ".exs"])
-
-    plugins_extensions = opts |> plugin.features() |> Keyword.fetch!(:extensions) |> MapSet.new()
-    not MapSet.disjoint?(plugins_extensions, elixir_extensions)
   end
 end

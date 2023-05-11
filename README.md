@@ -1,5 +1,4 @@
 <h1 align="center">examples-styler-ex</h1>
-</p>
 <p align="center">Format elixir code examples in your docs!</p>
 <p align="center">
     <a href="https://dev.azure.com/peake100/Peake100/_build?definitionId=21"><img src="https://dev.azure.com/peake100/Peake100/_apis/build/status/examples-styler-ex?repoName=peake100%2examples-styler-ex&branchName=dev" alt="click to see build pipeline"></a>
@@ -11,8 +10,8 @@
     <a href="https://hexdocs.pm/examples_styler/readme.html"><img src="https://img.shields.io/badge/docs-hexdocs.pm-blue" alt="Documentation"></a>
 </p>
 
-`Mix.Tasks.Format.Examples` is a `Mix.Tasks.Format` plugin to bring the same styling 
-rules to your docs!
+`ExamplesStyler` is a `Mix.Tasks.Format` plugin to bring the same styling rules to your 
+docs!
 
 ## Usage
 
@@ -21,16 +20,18 @@ This package implements a `mix format` plugin. Add the following `plugins` value
 
 ```elixir
 [
-  plugins: [Mix.Tasks.Format.Examples],
+  plugins: [ExamplesStyler],
   inputs: ...
 ]
 ```
 
-If you use a non-default plugin like [adobe/elixir-styler](https://github.com/adobe/elixir-styler) to style your code, it will also need to be added:
+If you use a non-default plugin like 
+[adobe/elixir-styler](https://github.com/adobe/elixir-styler) to style your code, it 
+will also need to be added:
 
 ```elixir
 [
-  plugins: [Mix.Tasks.Format.Examples, Styler],
+  plugins: [Styler, ExamplesStyler],
   inputs: ...
 ]
 ```

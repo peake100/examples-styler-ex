@@ -1,8 +1,7 @@
-defmodule Mix.Tasks.FormatterTest do
-  use ExUnit.Case
+defmodule ExamplesStyler.ExamplesTest do
+  @moduledoc false
 
-  alias Mix.Tasks.Format
-  alias Mix.Tasks.Format.Examples.Formatter
+  use ExUnit.Case
 
   describe "format/2" do
     setup [:setup_test_case]
@@ -355,18 +354,18 @@ defmodule Mix.Tasks.FormatterTest do
 
     @tag test_case: hd(test_cases)
     test "does not recurse when `Styler.Exmaples` present in plugins", context do
-      opts = [plugins: [Styler, Format.Examples], sigils: [], extension: ".exs", file: "nofile.exs"]
+      opts = [plugins: [Styler, ExamplesStyler], sigils: [], extension: ".exs", file: "nofile.exs"]
 
       input = wrap_doc(context.input)
-      assert Formatter.format(input, opts) == wrap_doc(context.expected)
+      assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
     end
 
     @tag test_case: hd(test_cases)
     test "correctly styles when Styler is second", context do
-      opts = [plugins: [Format.Examples, Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
+      opts = [plugins: [ExamplesStyler, Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
 
       input = wrap_doc(context.input)
-      assert Formatter.format(input, opts) == wrap_doc(context.expected)
+      assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
     end
 
     for test_case <- test_cases do
@@ -378,7 +377,7 @@ defmodule Mix.Tasks.FormatterTest do
         input = wrap_doc(context.input)
 
         opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
-        assert Formatter.format(input, opts) == wrap_doc(context.expected)
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
       end
 
       name = "#{test_case.name} | @doc | .ex | with indent"
@@ -390,7 +389,7 @@ defmodule Mix.Tasks.FormatterTest do
         expected = context.expected |> wrap_doc() |> String.split(~r/\n/) |> Enum.map_join("\n", &("\t    " <> &1))
 
         opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
-        assert Formatter.format(input, opts) == expected
+        assert ExamplesStyler.Examples.format(input, opts) == expected
       end
 
       name = "#{test_case.name} | @moduledoc | .ex"
@@ -401,7 +400,7 @@ defmodule Mix.Tasks.FormatterTest do
         input = wrap_moduledoc(context.input)
 
         opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
-        assert Formatter.format(input, opts) == wrap_moduledoc(context.expected)
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_moduledoc(context.expected)
       end
 
       name = "#{test_case.name} | @typedoc | .ex"
@@ -412,7 +411,7 @@ defmodule Mix.Tasks.FormatterTest do
         input = wrap_moduledoc(context.input)
 
         opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
-        assert Formatter.format(input, opts) == wrap_moduledoc(context.expected)
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_moduledoc(context.expected)
       end
 
       name = "#{test_case.name} | does not format non-doc"
@@ -421,7 +420,7 @@ defmodule Mix.Tasks.FormatterTest do
       @tag test_case: test_case
       test name, context do
         opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
-        assert Formatter.format(context.input, opts) == context.input
+        assert ExamplesStyler.Examples.format(context.input, opts) == context.input
       end
 
       name = "#{test_case.name} | @doc | .exs"
@@ -432,7 +431,7 @@ defmodule Mix.Tasks.FormatterTest do
         input = wrap_doc(context.input)
 
         opts = [plugins: [Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
-        assert Formatter.format(input, opts) == wrap_doc(context.expected)
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
       end
 
       name = "#{test_case.name} | @moduledoc | .exs"
@@ -443,7 +442,7 @@ defmodule Mix.Tasks.FormatterTest do
         input = wrap_moduledoc(context.input)
 
         opts = [plugins: [Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
-        assert Formatter.format(input, opts) == wrap_moduledoc(context.expected)
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_moduledoc(context.expected)
       end
 
       name = "#{test_case.name} | @typedoc | .exs"
@@ -454,7 +453,7 @@ defmodule Mix.Tasks.FormatterTest do
         input = wrap_typedoc(context.input)
 
         opts = [plugins: [Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
-        assert Formatter.format(input, opts) == wrap_typedoc(context.expected)
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_typedoc(context.expected)
       end
 
       name = "#{test_case.name} | .md"
@@ -463,7 +462,7 @@ defmodule Mix.Tasks.FormatterTest do
       @tag test_case: test_case
       test name, context do
         opts = [plugins: [Styler], sigils: [], extension: ".md", file: "nofile.md"]
-        assert Formatter.format(context.input, opts) == context.expected
+        assert ExamplesStyler.Examples.format(context.input, opts) == context.expected
       end
 
       name = "#{test_case.name} | .cheatmd"
@@ -472,7 +471,7 @@ defmodule Mix.Tasks.FormatterTest do
       @tag test_case: test_case
       test name, context do
         opts = [plugins: [Styler], sigils: [], extension: ".md", file: "cheatmd.md"]
-        assert Formatter.format(context.input, opts) == context.expected
+        assert ExamplesStyler.Examples.format(context.input, opts) == context.expected
       end
     end
   end
