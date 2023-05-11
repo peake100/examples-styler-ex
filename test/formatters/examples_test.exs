@@ -368,6 +368,41 @@ defmodule ExamplesStyler.ExamplesTest do
       assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
     end
 
+    @tag test_case: %{}
+    test "correctly formats multiple docstrings" do
+      opts = [plugins: [ExamplesStyler, Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
+
+      input = """
+      @doc \"\"\"
+      iex> 1 +    1
+      \"\"\"
+
+      @doc \"\"\"
+      iex> 1 +    2
+      \"\"\"
+
+      @moduledoc \"\"\"
+      iex> 1 +   3
+      \"\"\"
+      """
+
+      expected = """
+      @doc \"\"\"
+      iex> 1 + 1
+      \"\"\"
+
+      @doc \"\"\"
+      iex> 1 + 2
+      \"\"\"
+
+      @moduledoc \"\"\"
+      iex> 1 + 3
+      \"\"\"
+      """
+
+      assert ExamplesStyler.Examples.format(input, opts) == expected
+    end
+
     for test_case <- test_cases do
       name = "#{test_case.name} | @doc | .ex"
 
