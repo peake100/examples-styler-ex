@@ -372,6 +372,7 @@ defmodule ExamplesStyler.ExamplesTest do
     test "correctly formats multiple docstrings" do
       opts = [plugins: [ExamplesStyler, Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
 
+      # credo:disable-for-lines:28
       input = """
       @doc \"\"\"
       iex> 1 +    1
