@@ -11,7 +11,7 @@
 </p>
 
 `ExamplesStyler` is a `Mix.Tasks.Format` plugin to bring the same styling rules to your 
-docs!
+docstrings and markdown files!
 
 ## Usage
 
