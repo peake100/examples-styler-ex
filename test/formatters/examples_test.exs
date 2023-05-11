@@ -1,4 +1,6 @@
-defmodule Styler.ExmaplesTest do
+defmodule ExamplesStyler.ExamplesTest do
+  @moduledoc false
+
   use ExUnit.Case
 
   describe "format/2" do
@@ -352,19 +354,181 @@ defmodule Styler.ExmaplesTest do
 
     @tag test_case: hd(test_cases)
     test "does not recurse when `Styler.Exmaples` present in plugins", context do
-      opts = [plugins: [Styler, Styler.Examples], sigils: [], extension: ".exs", file: "nofile.exs"]
-      assert Styler.Examples.format(context.input, opts) == context.expected
+      opts = [plugins: [Styler, ExamplesStyler], sigils: [], extension: ".exs", file: "nofile.exs"]
+
+      input = wrap_doc(context.input)
+      assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
+    end
+
+    @tag test_case: hd(test_cases)
+    test "correctly styles when Styler is second", context do
+      opts = [plugins: [ExamplesStyler, Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
+
+      input = wrap_doc(context.input)
+      assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
+    end
+
+    @tag test_case: %{}
+    test "correctly formats multiple docstrings" do
+      opts = [plugins: [ExamplesStyler, Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
+
+      # credo:disable-for-lines:28
+      input = """
+      @doc \"\"\"
+      iex> 1 +    1
+      \"\"\"
+
+      @doc \"\"\"
+      iex> 1 +    2
+      \"\"\"
+
+      @moduledoc \"\"\"
+      iex> 1 +   3
+      \"\"\"
+      """
+
+      expected = """
+      @doc \"\"\"
+      iex> 1 + 1
+      \"\"\"
+
+      @doc \"\"\"
+      iex> 1 + 2
+      \"\"\"
+
+      @moduledoc \"\"\"
+      iex> 1 + 3
+      \"\"\"
+      """
+
+      assert ExamplesStyler.Examples.format(input, opts) == expected
     end
 
     for test_case <- test_cases do
-      @tag test_id: UUID.uuid3(:oid, test_case.name)
+      name = "#{test_case.name} | @doc | .ex"
+
+      @tag test_id: UUID.uuid3(:oid, name)
       @tag test_case: test_case
-      test test_case.name, context do
+      test name, context do
+        input = wrap_doc(context.input)
+
+        opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
+      end
+
+      name = "#{test_case.name} | @doc | .ex | with indent"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        input = context.input |> wrap_doc() |> String.split(~r/\n/) |> Enum.map_join("\n", &("\t    " <> &1))
+        expected = context.expected |> wrap_doc() |> String.split(~r/\n/) |> Enum.map_join("\n", &("\t    " <> &1))
+
+        opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
+        assert ExamplesStyler.Examples.format(input, opts) == expected
+      end
+
+      name = "#{test_case.name} | @moduledoc | .ex"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        input = wrap_moduledoc(context.input)
+
+        opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_moduledoc(context.expected)
+      end
+
+      name = "#{test_case.name} | @typedoc | .ex"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        input = wrap_moduledoc(context.input)
+
+        opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_moduledoc(context.expected)
+      end
+
+      name = "#{test_case.name} | does not format non-doc"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        opts = [plugins: [Styler], sigils: [], extension: ".ex", file: "nofile.ex"]
+        assert ExamplesStyler.Examples.format(context.input, opts) == context.input
+      end
+
+      name = "#{test_case.name} | @doc | .exs"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        input = wrap_doc(context.input)
+
         opts = [plugins: [Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
-        assert Styler.Examples.format(context.input, opts) == context.expected
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_doc(context.expected)
+      end
+
+      name = "#{test_case.name} | @moduledoc | .exs"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        input = wrap_moduledoc(context.input)
+
+        opts = [plugins: [Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_moduledoc(context.expected)
+      end
+
+      name = "#{test_case.name} | @typedoc | .exs"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        input = wrap_typedoc(context.input)
+
+        opts = [plugins: [Styler], sigils: [], extension: ".exs", file: "nofile.exs"]
+        assert ExamplesStyler.Examples.format(input, opts) == wrap_typedoc(context.expected)
+      end
+
+      name = "#{test_case.name} | .md"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        opts = [plugins: [Styler], sigils: [], extension: ".md", file: "nofile.md"]
+        assert ExamplesStyler.Examples.format(context.input, opts) == context.expected
+      end
+
+      name = "#{test_case.name} | .cheatmd"
+
+      @tag test_id: UUID.uuid3(:oid, name)
+      @tag test_case: test_case
+      test name, context do
+        opts = [plugins: [Styler], sigils: [], extension: ".md", file: "cheatmd.md"]
+        assert ExamplesStyler.Examples.format(context.input, opts) == context.expected
       end
     end
   end
 
   defp setup_test_case(context), do: context.test_case
+
+  @doc """
+  Wrap text in a multiline doc string.
+  """
+  @spec wrap_doc(String.t()) :: String.t()
+  def wrap_doc(text), do: "@doc \"\"\"\n" <> text <> "\n\"\"\"\n"
+
+  @doc """
+  Wrap text in a multiline moduledoc string.
+  """
+  @spec wrap_moduledoc(String.t()) :: String.t()
+  def wrap_moduledoc(text), do: "@moduledoc \"\"\"\n" <> text <> "\n\"\"\"\n"
+
+  @doc """
+  Wrap text in a multiline typedoc string.
+  """
+  @spec wrap_typedoc(String.t()) :: String.t()
+  def wrap_typedoc(text), do: "@typedoc \"\"\"\n" <> text <> "\n\"\"\"\n"
 end

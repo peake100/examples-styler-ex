@@ -1,20 +1,10 @@
-defmodule Styler.Examples do
-  @moduledoc """
-  Styles Code examples in ".ex", ".exs", ".md", and ".cheatmd" files
-  """
+defmodule ExamplesStyler.Examples do
+  @moduledoc false
+
   @behaviour Mix.Tasks.Format
 
-  alias Styler.Examples.MultiPlugin
-
-  @typedoc false
-  @typep format_opts() :: [
-           {:extension, String.t()}
-           | {:file, Path.t()}
-           | {:plugins, [module()]}
-           | {:sigils, [atom()]}
-           | {:inputs, [String.t()]}
-           | {atom(), any()}
-         ]
+  alias ExamplesStyler.Utils
+  alias Mix.Tasks.Format
 
   # Regex index match on a code example.
   @typep regex_index() :: [{non_neg_integer(), non_neg_integer()}]
@@ -29,34 +19,53 @@ defmodule Styler.Examples do
   @typep span() :: {span_type(), String.t()}
 
   @doc false
-  @impl Mix.Tasks.Format
-  @spec features(format_opts()) :: [sigils: [atom()], extensions: [String.t()]]
+  @impl Format
+  @spec features(Utils.format_opts()) :: [sigils: [atom()], extensions: [String.t()]]
   def features(_opts), do: [sigils: [], extensions: [".ex", ".exs", ".md", ".cheatmd"]]
 
+  @docs_regex ~r/(?>@doc|@moduledoc|@typedoc)\s*""".*"""/msU
   @code_example_regex ~r/(?>^(?>[\t ]*iex>.*$)(?>{\r\n|\n|\r})?)+/m
 
   @doc false
-  @impl Mix.Tasks.Format
-  @spec format(String.t(), format_opts()) :: String.t()
+  @impl Format
+  @spec format(String.t(), Utils.format_opts()) :: String.t()
   def format(input, opts) do
+    elixir_plugin = Utils.find_elixir_formatter(opts)
+    extension = Keyword.fetch!(opts, :extension)
+
+    docs_indexes =
+      if extension in [".ex", ".exs"] do
+        Regex.scan(@docs_regex, input, return: :index)
+      else
+        [[{0, byte_size(input)}]]
+      end
+
     example_indexes = Regex.scan(@code_example_regex, input, return: :index)
-    span_lengths = calculate_spans(input, example_indexes)
+    span_lengths = calculate_spans(input, example_indexes, docs_indexes)
 
     input
     |> split_spans(span_lengths)
     |> Enum.map(fn
-      {:code_example, example_string} -> reformat_example(example_string, opts)
+      {:code_example, example_string} -> reformat_example(example_string, elixir_plugin, opts)
       {:other, other_string} -> other_string
     end)
-    |> List.to_string()
+    |> IO.iodata_to_binary()
   end
 
   # Created a list of contiguous character lengths and string types for example and
   # non-example code.
-  @spec calculate_spans(String.t(), [regex_index()]) :: [span_length()]
-  defp calculate_spans(input, example_indexes) do
+  @spec calculate_spans(String.t(), [regex_index()], [regex_index()] | nil) :: [span_length()]
+  defp calculate_spans(input, example_indexes, docs_indexes) do
     example_indexes
     |> Enum.map(fn [{_, _} = index] -> index end)
+    |> Enum.filter(fn {example_start, example_length} ->
+      example_end = example_start + example_length
+
+      Enum.any?(docs_indexes, fn [{doc_start, doc_length}] ->
+        doc_end = doc_start + doc_length
+        example_start >= doc_start and example_end <= doc_end
+      end)
+    end)
     |> Enum.reduce({0, []}, fn {start, length}, {cursor, spans} ->
       pre_example = start - cursor
       example = length
@@ -87,23 +96,15 @@ defmodule Styler.Examples do
   end
 
   # Reformats a single example.
-  @spec reformat_example(String.t(), format_opts()) :: String.t()
-  defp reformat_example(example, opts) do
+  @spec reformat_example(String.t(), module(), Utils.format_opts()) :: String.t()
+  defp reformat_example(example, elixir_plugin, opts) do
     [indent] = Regex.run(~r/^[\t ]*/, example)
-
-    # We need to remove the current formatter from the list to avoid recursively calling
-    # this function, and update the extension to ".exs" so that we trigger the correct
-    # formatters, even if we are in a markdown file.
-    opts =
-      opts
-      |> Keyword.update(:plugins, [], &List.delete(&1, __MODULE__))
-      |> Keyword.put(:extension, ".exs")
 
     prompt = indent <> "iex> "
 
     example
     |> String.replace(~r/^[ \t]*iex>[ \t]*/m, "")
-    |> MultiPlugin.format(opts)
+    |> elixir_plugin.format(opts)
     |> String.replace(~r/^/m, prompt)
     |> String.trim_trailing(prompt)
   end
