@@ -1,4 +1,4 @@
-defmodule Styler.Examples.MixProject do
+defmodule Mix.Format.Examples.MixProject do
   use Mix.Project
 
   def project do
