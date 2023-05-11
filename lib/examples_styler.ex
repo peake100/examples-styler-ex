@@ -9,12 +9,14 @@ defmodule ExamplesStyler do
   alias ExamplesStyler.Utils
   alias Mix.Tasks.Format
 
+  @doc false
   @impl Format
-  @spec features(Keyword.t()) :: [sigils: [atom()], extensions: [String.t()]]
+  @spec features(Utils.format_opts()) :: [sigils: [atom()], extensions: [String.t()]]
   def features(_), do: [sigils: [], extensions: [".ex", ".exs", ".md", ".cheatmd"]]
 
+  @doc false
   @impl Format
-  @spec format(String.t(), Keyword.t()) :: String.t()
+  @spec format(String.t(), Utils.format_opts()) :: String.t()
   def format(input, opts) do
     sigils = opts |> Keyword.fetch!(:sigils) |> MapSet.new()
     extension = Keyword.fetch!(opts, :extension)
